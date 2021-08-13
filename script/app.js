@@ -13,11 +13,11 @@ let app = new PIXI.Application({
 
 app.renderer.backgroundColor = backgroundColour;
 
-app.renderer.resize(window.innerWidth*0.999, window.innerHeight*0.999);
+app.renderer.resize(window.innerWidth * 0.99, window.innerHeight * 0.99);
 app.renderer.view.style.position = "absolute";
 
 document.body.appendChild(app.view);
-document.body.style.backgroundColor = "#"+ ("000000"+backgroundColour.toString(16)).slice(-6);
+document.body.style.backgroundColor = stringColour(backgroundColour);
 
 let spaceship = PIXI.Sprite.from("../images/spaceship.png");
 app.stage.addChild(spaceship);
@@ -29,6 +29,21 @@ spaceship.y = window.innerHeight / 2 - spaceship.height / 2;
 spaceship.x = window.innerWidth * 0.02;
 spaceship.velocity = {};
 spaceship.velocity.y = 0;
+
+const scoreText = new PIXI.Text(
+    "Score: 0",
+    new PIXI.TextStyle({
+        fontFamily: ["Noto Sans JP", "sans-serif"],
+        fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.05,
+        fill: stringColour(scoreBoardColour),
+        fontWeight: 900,
+        align: "center",
+    })
+);
+scoreText.anchor.x = 0.5;
+scoreText.x = window.innerWidth / 2;
+scoreText.y = window.innerHeight * 0.02;
+app.stage.addChild(scoreText);
 
 let shots = [];
 let enemies = [];
@@ -79,8 +94,15 @@ function removeSpriteFromList(list, index) {
     list.splice(index, 1);
 }
 
+function stringColour(colour) {
+    return "#" + ("000000" + colour.toString(16)).slice(-6);
+}
+
 app.ticker.add((delta) => {
     if (!gameOver) {
+        /* Rendering score in canvas */
+        scoreText.text = "Score: " + score;
+
         /* Moving spaceship */
         spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01 * delta;
         if (spaceship.y < 0) spaceship.y = 0;
@@ -103,7 +125,6 @@ app.ticker.add((delta) => {
                     if (enemies[enemy].life <= 0) {
                         score += enemies[enemy].score;
                         removeSpriteFromList(enemies, enemy);
-                        console.log(score);
                     }
                 }
             }
