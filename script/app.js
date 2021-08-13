@@ -61,7 +61,7 @@ app.ticker.add((delta) => {
     for (const shoot in shoots) {
         shoots[shoot].x += window.innerWidth * 0.015;
         shoots[shoot].rotation += 0.1;
-        if (shoots[shoot].x > window.innerWidth / 2) {
+        if (shoots[shoot].x > window.innerWidth) {
             shoots[shoot].destroy();
             shoots.splice(shoot, 1);
         }
