@@ -57,7 +57,7 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown") spaceship.velocity.y = 1;
 
     if (event.key === " " && !gameOver) {
-        let shoot = PIXI.Sprite.from("../images/fire-tail.png");
+        let shoot = PIXI.Sprite.from("images/fire-tail.png");
         app.stage.addChild(shoot);
         shoot.width = spaceship.width * 0.5;
         shoot.height = spaceship.height * 0.7;
@@ -132,7 +132,7 @@ app.ticker.add((delta) => {
 
         /* Creating new enemies */
         if (Math.random() < 0.015) {
-            let enemy = PIXI.Sprite.from("../images/starfighter.png");
+            let enemy = PIXI.Sprite.from("images/starfighter.png");
             enemy.width = spaceship.width;
             enemy.height = spaceship.height;
             enemy.x = window.innerWidth;
