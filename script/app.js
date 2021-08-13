@@ -41,8 +41,8 @@ document.addEventListener("keydown", (event) => {
         app.stage.addChild(shoot);
         shoot.width = spaceship.width * 0.5;
         shoot.height = spaceship.height * 0.7;
-        shoot.x = spaceship.x + spaceship.height;
-        shoot.y = spaceship.y;
+        shoot.x = spaceship.x + spaceship.width; 
+        shoot.y = spaceship.y + spaceship.height*0.5;
         shoot.anchor.set(0.5, 0.4);
         shots.push(shoot);
     }
@@ -63,16 +63,13 @@ function collided(sprite1, sprite2) {
             sprite1.y + sprite1.height > sprite2.y &&
             sprite1.y < sprite2.y + sprite2.height
         );
-    
-    } catch(error) {
-        if(error instanceof TypeError)
-            return false;
+    } catch (error) {
+        if (error instanceof TypeError) return false;
         throw error;
     }
 }
 
-function removeSpriteFromList(list, index)
-{
+function removeSpriteFromList(list, index) {
     list[index].destroy();
     list.splice(index, 1);
 }
@@ -93,8 +90,8 @@ app.ticker.add((delta) => {
         }
 
         /* Checking collision - shot hitting enemy */
-        for(const enemy in enemies) {
-            if(collided(shots[shot], enemies[enemy])) {
+        for (const enemy in enemies) {
+            if (collided(shots[shot], enemies[enemy])) {
                 removeSpriteFromList(shots, shot);
                 removeSpriteFromList(enemies, enemy);
             }
@@ -113,8 +110,11 @@ app.ticker.add((delta) => {
         let valid = true;
         for (const otherEnemy in enemies) {
             if (collided(enemy, enemies[otherEnemy])) {
-                
-                console.log("collided on creation: ", enemy, enemies[otherEnemy]);
+                console.log(
+                    "collided on creation: ",
+                    enemy,
+                    enemies[otherEnemy]
+                );
                 valid = false;
                 break;
             }
@@ -123,8 +123,7 @@ app.ticker.add((delta) => {
         if (valid) {
             app.stage.addChild(enemy);
             enemies.push(enemy);
-        }
-        else {
+        } else {
             enemy.destroy();
         }
     }
@@ -132,7 +131,7 @@ app.ticker.add((delta) => {
     /* Moving enemies */
     for (const enemy in enemies) {
         enemies[enemy].x -= window.innerWidth * 0.005 * delta;
-        if (enemies[enemy].x <= 0) {
+        if (enemies[enemy].x <= 0 || collided(enemies[enemy], spaceship)) {
             /* TODO: make game over */
             enemies[enemy].destroy();
             enemies.splice(enemy, 1);
