@@ -32,6 +32,8 @@ spaceship.velocity.y = 0;
 let shots = [];
 let enemies = [];
 
+let score = 0;
+
 document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowUp") spaceship.velocity.y = -1;
     if (event.key === "ArrowDown") spaceship.velocity.y = 1;
@@ -41,8 +43,8 @@ document.addEventListener("keydown", (event) => {
         app.stage.addChild(shoot);
         shoot.width = spaceship.width * 0.5;
         shoot.height = spaceship.height * 0.7;
-        shoot.x = spaceship.x + spaceship.width; 
-        shoot.y = spaceship.y + spaceship.height*0.5;
+        shoot.x = spaceship.x + spaceship.width;
+        shoot.y = spaceship.y + spaceship.height * 0.5;
         shoot.anchor.set(0.5, 0.4);
         shots.push(shoot);
     }
@@ -92,8 +94,13 @@ app.ticker.add((delta) => {
         /* Checking collision - shot hitting enemy */
         for (const enemy in enemies) {
             if (collided(shots[shot], enemies[enemy])) {
+                enemies[enemy].life -= 1;
                 removeSpriteFromList(shots, shot);
-                removeSpriteFromList(enemies, enemy);
+                if (enemies[enemy].life <= 0) {
+                    score += enemies[enemy].score;
+                    removeSpriteFromList(enemies, enemy);
+                    console.log(score);
+                }
             }
         }
     }
@@ -105,6 +112,8 @@ app.ticker.add((delta) => {
         enemy.height = spaceship.height;
         enemy.x = window.innerWidth;
         enemy.y = Math.random() * (window.innerHeight - enemy.height);
+        enemy.score =  1;
+        enemy.life = 2;
 
         /* Checking collision with other enemies */
         let valid = true;
