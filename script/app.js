@@ -13,10 +13,11 @@ let app = new PIXI.Application({
 
 app.renderer.backgroundColor = backgroundColour;
 
-app.renderer.resize(window.innerWidth, window.innerHeight);
+app.renderer.resize(window.innerWidth*0.999, window.innerHeight*0.999);
 app.renderer.view.style.position = "absolute";
 
 document.body.appendChild(app.view);
+document.body.style.backgroundColor = "#"+ ("000000"+backgroundColour.toString(16)).slice(-6);
 
 let spaceship = PIXI.Sprite.from("../images/spaceship.png");
 app.stage.addChild(spaceship);
@@ -144,7 +145,6 @@ app.ticker.add((delta) => {
         for (const enemy in enemies) {
             enemies[enemy].x -= window.innerWidth * 0.005 * delta;
             if (enemies[enemy].x <= 0 || collided(enemies[enemy], spaceship)) {
-                /* TODO: make game over */
                 gameOver = true;
             }
         }
