@@ -43,7 +43,7 @@ document.addEventListener("keydown", (event) => {
         shoot.height = spaceship.height * 0.7;
         shoot.x = spaceship.x + spaceship.height;
         shoot.y = spaceship.y;
-        shoot.anchor.set(0.5);
+        shoot.anchor.set(0.5, 0.4);
         shoots.push(shoot);
     }
 });
@@ -85,7 +85,7 @@ app.ticker.add((delta) => {
         enemy.width = spaceship.width;
         enemy.height = spaceship.height;
         enemy.x = window.innerWidth;
-        enemy.y = Math.random()*window.innerHeight;
+        enemy.y = Math.random()*(window.innerHeight-enemy.height  );
     }
 
     /* Moving enemies */
