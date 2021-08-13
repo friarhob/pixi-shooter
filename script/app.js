@@ -24,10 +24,24 @@ spaceship.height = Math.min(window.innerHeight, window.innerWidth) * 0.08;
 
 spaceship.y = window.innerHeight / 2 - spaceship.height / 2;
 spaceship.x = window.innerWidth*0.02;
+spaceship.velocity = {};
+spaceship.velocity.y = 0;
 
 document.addEventListener('keydown', (event) => {
     if(event.key === 'ArrowUp')
-        spaceship.y -= 10;
+        spaceship.velocity.y = -1;
     if(event.key === 'ArrowDown')
-        spaceship.y += 10;
+        spaceship.velocity.y = 1;
+});
+
+document.addEventListener('keyup', (event) => {
+    if(event.key === 'ArrowUp' && spaceship.velocity.y == -1)
+        spaceship.velocity.y = 0;
+    if(event.key === 'ArrowDown' && spaceship.velocity.y == 1)
+        spaceship.velocity.y = 0;
+});
+
+
+app.ticker.add((delta) => {
+    spaceship.y += spaceship.velocity.y*window.innerHeight*0.01;
 });
