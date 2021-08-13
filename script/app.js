@@ -55,43 +55,65 @@ document.addEventListener("keyup", (event) => {
         spaceship.velocity.y = 0;
 });
 
-let nTicks = 0;
+function checkCollision(sprite1, sprite2) {
+    return (
+        sprite1.x + sprite1.width > sprite2.x &&
+        sprite1.x < sprite2.x + sprite2.width &&
+        sprite1.y + sprite1.height > sprite2.y &&
+        sprite1.y < sprite2.y + sprite2.height
+    );
+}
 
 app.ticker.add((delta) => {
-    nTicks += 1;
-    
     /* Moving spaceship */
-    spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01;
+    spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01 * delta;
     if (spaceship.y < 0) spaceship.y = 0;
     if (spaceship.y > window.innerHeight - spaceship.height)
         spaceship.y = window.innerHeight - spaceship.height;
 
-    /* Updating shoots */
+    /* Moving shoots */
     for (const shoot in shoots) {
-        shoots[shoot].x += window.innerWidth * 0.015;
+        shoots[shoot].x += window.innerWidth * 0.015 * delta;
         shoots[shoot].rotation += 0.15;
         if (shoots[shoot].x > window.innerWidth) {
             shoots[shoot].destroy();
             shoots.splice(shoot, 1);
         }
+
+        /* Checking collision */
     }
 
     /* Creating new enemies */
-    if(nTicks % 80 == 0)
-    {
+    if (Math.random() < 0.015) {
         let enemy = PIXI.Sprite.from("../images/starfighter.png");
-        app.stage.addChild(enemy);
-        enemies.push(enemy);
         enemy.width = spaceship.width;
         enemy.height = spaceship.height;
         enemy.x = window.innerWidth;
-        enemy.y = Math.random()*(window.innerHeight-enemy.height  );
+        enemy.y = Math.random() * (window.innerHeight - enemy.height);
+
+        /* Checking collision with other enemies */
+        let valid = true;
+        for (const otherEnemy in enemies) {
+            if (checkCollision(enemy, enemies[otherEnemy])) {
+                valid = false;
+                break;
+            }
+        }
+
+        if (valid) {
+            app.stage.addChild(enemy);
+            enemies.push(enemy);
+        }
+        else {
+            enemy.destroy();
+            console.log("collided on creation: ", enemy);
+        }
     }
 
     /* Moving enemies */
-    for(const enemy in enemies) {
-        enemies[enemy].x -= window.innerWidth*0.005;
-        if(enemies[enemy].x <= 0) {
+    for (const enemy in enemies) {
+        enemies[enemy].x -= window.innerWidth * 0.005 * delta;
+        if (enemies[enemy].x <= 0) {
             /* TODO: make game over */
             enemies[enemy].destroy();
             enemies.splice(enemy, 1);
