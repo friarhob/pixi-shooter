@@ -34,11 +34,13 @@ let enemies = [];
 
 let score = 0;
 
+let gameOver = false;
+
 document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowUp") spaceship.velocity.y = -1;
     if (event.key === "ArrowDown") spaceship.velocity.y = 1;
 
-    if (event.key === " ") {
+    if (event.key === " " && !gameOver) {
         let shoot = PIXI.Sprite.from("../images/fire-tail.png");
         app.stage.addChild(shoot);
         shoot.width = spaceship.width * 0.5;
@@ -77,73 +79,74 @@ function removeSpriteFromList(list, index) {
 }
 
 app.ticker.add((delta) => {
-    /* Moving spaceship */
-    spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01 * delta;
-    if (spaceship.y < 0) spaceship.y = 0;
-    if (spaceship.y > window.innerHeight - spaceship.height)
-        spaceship.y = window.innerHeight - spaceship.height;
+    if (!gameOver) {
+        /* Moving spaceship */
+        spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01 * delta;
+        if (spaceship.y < 0) spaceship.y = 0;
+        if (spaceship.y > window.innerHeight - spaceship.height)
+            spaceship.y = window.innerHeight - spaceship.height;
 
-    /* Moving shots */
-    for (const shot in shots) {
-        shots[shot].x += window.innerWidth * 0.015 * delta;
-        shots[shot].rotation += 0.15;
-        if (shots[shot].x > window.innerWidth) {
-            removeSpriteFromList(shots, shot);
-        }
-
-        /* Checking collision - shot hitting enemy */
-        for (const enemy in enemies) {
-            if (collided(shots[shot], enemies[enemy])) {
-                enemies[enemy].life -= 1;
+        /* Moving shots */
+        for (const shot in shots) {
+            shots[shot].x += window.innerWidth * 0.015 * delta;
+            shots[shot].rotation += 0.15;
+            if (shots[shot].x > window.innerWidth) {
                 removeSpriteFromList(shots, shot);
-                if (enemies[enemy].life <= 0) {
-                    score += enemies[enemy].score;
-                    removeSpriteFromList(enemies, enemy);
-                    console.log(score);
+            }
+
+            /* Checking collision - shot hitting enemy */
+            for (const enemy in enemies) {
+                if (collided(shots[shot], enemies[enemy])) {
+                    enemies[enemy].life -= 1;
+                    removeSpriteFromList(shots, shot);
+                    if (enemies[enemy].life <= 0) {
+                        score += enemies[enemy].score;
+                        removeSpriteFromList(enemies, enemy);
+                        console.log(score);
+                    }
                 }
             }
         }
-    }
 
-    /* Creating new enemies */
-    if (Math.random() < 0.015) {
-        let enemy = PIXI.Sprite.from("../images/starfighter.png");
-        enemy.width = spaceship.width;
-        enemy.height = spaceship.height;
-        enemy.x = window.innerWidth;
-        enemy.y = Math.random() * (window.innerHeight - enemy.height);
-        enemy.score =  1;
-        enemy.life = 2;
+        /* Creating new enemies */
+        if (Math.random() < 0.015) {
+            let enemy = PIXI.Sprite.from("../images/starfighter.png");
+            enemy.width = spaceship.width;
+            enemy.height = spaceship.height;
+            enemy.x = window.innerWidth;
+            enemy.y = Math.random() * (window.innerHeight - enemy.height);
+            enemy.score = 1;
+            enemy.life = 2;
 
-        /* Checking collision with other enemies */
-        let valid = true;
-        for (const otherEnemy in enemies) {
-            if (collided(enemy, enemies[otherEnemy])) {
-                console.log(
-                    "collided on creation: ",
-                    enemy,
-                    enemies[otherEnemy]
-                );
-                valid = false;
-                break;
+            /* Checking collision with other enemies */
+            let valid = true;
+            for (const otherEnemy in enemies) {
+                if (collided(enemy, enemies[otherEnemy])) {
+                    console.log(
+                        "collided on creation: ",
+                        enemy,
+                        enemies[otherEnemy]
+                    );
+                    valid = false;
+                    break;
+                }
+            }
+
+            if (valid) {
+                app.stage.addChild(enemy);
+                enemies.push(enemy);
+            } else {
+                enemy.destroy();
             }
         }
 
-        if (valid) {
-            app.stage.addChild(enemy);
-            enemies.push(enemy);
-        } else {
-            enemy.destroy();
-        }
-    }
-
-    /* Moving enemies */
-    for (const enemy in enemies) {
-        enemies[enemy].x -= window.innerWidth * 0.005 * delta;
-        if (enemies[enemy].x <= 0 || collided(enemies[enemy], spaceship)) {
-            /* TODO: make game over */
-            enemies[enemy].destroy();
-            enemies.splice(enemy, 1);
+        /* Moving enemies */
+        for (const enemy in enemies) {
+            enemies[enemy].x -= window.innerWidth * 0.005 * delta;
+            if (enemies[enemy].x <= 0 || collided(enemies[enemy], spaceship)) {
+                /* TODO: make game over */
+                gameOver = true;
+            }
         }
     }
 });
