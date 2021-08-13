@@ -19,7 +19,7 @@ app.renderer.view.style.position = "absolute";
 document.body.appendChild(app.view);
 document.body.style.backgroundColor = stringColour(backgroundColour);
 
-let spaceship = PIXI.Sprite.from("../images/spaceship.png");
+let spaceship = PIXI.Sprite.from("./images/spaceship.png");
 app.stage.addChild(spaceship);
 
 spaceship.width = Math.min(window.innerHeight, window.innerWidth) * 0.08;
