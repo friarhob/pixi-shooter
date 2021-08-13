@@ -1,6 +1,7 @@
 let spaceshipColour = 0x1b71f2;
-let backgroundColour = 0x2f187a;
+let backgroundColour = 0x001028;
 let scoreBoardColour = 0xc2131f;
+let bulletColour = 0xc90411;
 
 let app = new PIXI.Application({
     width: 100,
@@ -23,25 +24,46 @@ spaceship.width = Math.min(window.innerHeight, window.innerWidth) * 0.08;
 spaceship.height = Math.min(window.innerHeight, window.innerWidth) * 0.08;
 
 spaceship.y = window.innerHeight / 2 - spaceship.height / 2;
-spaceship.x = window.innerWidth*0.02;
+spaceship.x = window.innerWidth * 0.02;
 spaceship.velocity = {};
 spaceship.velocity.y = 0;
 
-document.addEventListener('keydown', (event) => {
-    if(event.key === 'ArrowUp')
-        spaceship.velocity.y = -1;
-    if(event.key === 'ArrowDown')
-        spaceship.velocity.y = 1;
+let shoots = [];
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp") spaceship.velocity.y = -1;
+    if (event.key === "ArrowDown") spaceship.velocity.y = 1;
+
+    if (event.key === " ") {
+        let shoot = PIXI.Sprite.from("../images/fire-tail.png");
+        app.stage.addChild(shoot);
+        shoot.width = spaceship.width * 0.5;
+        shoot.height = spaceship.height * 0.7;
+        shoot.x = spaceship.x + spaceship.height;
+        shoot.y = spaceship.y;
+        shoots.push(shoot);
+    }
 });
 
-document.addEventListener('keyup', (event) => {
-    if(event.key === 'ArrowUp' && spaceship.velocity.y == -1)
+document.addEventListener("keyup", (event) => {
+    if (event.key === "ArrowUp" && spaceship.velocity.y == -1)
         spaceship.velocity.y = 0;
-    if(event.key === 'ArrowDown' && spaceship.velocity.y == 1)
+    if (event.key === "ArrowDown" && spaceship.velocity.y == 1)
         spaceship.velocity.y = 0;
 });
-
 
 app.ticker.add((delta) => {
-    spaceship.y += spaceship.velocity.y*window.innerHeight*0.01;
+    spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01;
+    if (spaceship.y < 0) spaceship.y = 0;
+    if (spaceship.y > window.innerHeight - spaceship.height)
+        spaceship.y = window.innerHeight - spaceship.height;
+
+    for (const shoot in shoots) {
+        shoots[shoot].x += window.innerWidth * 0.015;
+        shoots[shoot].rotation += 0.1;
+        if (shoots[shoot].x > window.innerWidth / 2) {
+            shoots[shoot].destroy();
+            shoots.splice(shoot, 1);
+        }
+    }
 });
