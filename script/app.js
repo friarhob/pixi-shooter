@@ -41,6 +41,7 @@ document.addEventListener("keydown", (event) => {
         shoot.height = spaceship.height * 0.7;
         shoot.x = spaceship.x + spaceship.height;
         shoot.y = spaceship.y;
+        shoot.anchor.set(0.5);
         shoots.push(shoot);
     }
 });
@@ -60,7 +61,7 @@ app.ticker.add((delta) => {
 
     for (const shoot in shoots) {
         shoots[shoot].x += window.innerWidth * 0.015;
-        shoots[shoot].rotation += 0.1;
+        shoots[shoot].rotation += 0.15;
         if (shoots[shoot].x > window.innerWidth) {
             shoots[shoot].destroy();
             shoots.splice(shoot, 1);
