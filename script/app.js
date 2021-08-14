@@ -224,7 +224,24 @@ app.ticker.add((delta) => {
             enemy.x = window.innerWidth;
             enemy.y = Math.random() * (window.innerHeight - enemy.height);
             enemy.score = 1;
+            enemy.speed = 1;
             enemy.life = 2;
+
+            /* Variation of sizes in enemy */
+            let enemySizeChance = Math.random();
+            if(enemySizeChance < 0.1) {
+                /* Large enemy */
+                enemy.width *= 2;
+                enemy.height *= 2;
+                enemy.speed /= 2;
+                enemy.life *= 3;
+            } else if (enemySizeChance < 0.3) {
+                /* small enemy */
+                enemy.width /= 1.5;
+                enemy.height /= 1.5;
+                enemy.speed *= 1.5;
+                enemy.life /= 2;
+            }
 
             /* Checking collision with other enemies */
             let valid = true;
@@ -250,7 +267,8 @@ app.ticker.add((delta) => {
 
         /* Moving enemies */
         for (const enemy in enemies) {
-            enemies[enemy].x -= window.innerWidth * 0.005 * delta;
+            let factor = 0.004 + score * 0.00001;
+            enemies[enemy].x -= window.innerWidth * factor * enemies[enemy].speed * delta;
             if (enemies[enemy].x <= 0 || collided(enemies[enemy], spaceship)) {
                 endGame();
             }
