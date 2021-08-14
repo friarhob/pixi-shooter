@@ -19,7 +19,7 @@ app.renderer.view.style.position = "absolute";
 document.body.appendChild(app.view);
 document.body.style.backgroundColor = stringColour(backgroundColour);
 
-let spaceship = PIXI.Sprite.from("../images/spaceship.png");
+let spaceship = PIXI.Sprite.from("images/spaceship.png");
 app.stage.addChild(spaceship);
 
 spaceship.width = Math.min(window.innerHeight, window.innerWidth) * 0.08;
@@ -143,7 +143,7 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown") spaceship.velocity.y = 1;
 
     if (event.key === " " && !gameOver) {
-        let shoot = PIXI.Sprite.from("../images/fire-tail.png");
+        let shoot = PIXI.Sprite.from("images/fire-tail.png");
         app.stage.addChild(shoot);
         shoot.width = spaceship.width * 0.5;
         shoot.height = spaceship.height * 0.7;
