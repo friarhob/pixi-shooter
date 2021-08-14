@@ -40,7 +40,7 @@ const scoreText = new PIXI.Text(
         align: "center",
         stroke: stringColour(scoreBoardColour),
         strokeThickness: 10,
-        trim: true
+        trim: true,
     })
 );
 scoreText.anchor.x = 0.5;
@@ -56,7 +56,7 @@ const instructions = new PIXI.Text(
         fill: stringColour(spaceshipColour),
         fontWeight: 500,
         align: "center",
-        trim: true
+        trim: true,
     })
 );
 instructions.anchor.x = 0.5;
@@ -65,12 +65,78 @@ instructions.x = window.innerWidth / 2;
 instructions.y = window.innerHeight * 0.98;
 app.stage.addChild(instructions);
 
-let shots = [];
-let enemies = [];
+const shots = [];
+const enemies = [];
 
 let score = 0;
 
 let gameOver = false;
+
+let newGameButton = null;
+let newGameButtonText = null;
+
+endGame();
+
+function endGame() {
+    if (!gameOver) {
+        gameOver = true;
+
+        newGameButton = new PIXI.Graphics()
+            .beginFill(scoreBoardColour)
+            .drawRoundedRect(
+                (window.innerWidth - window.innerWidth * 0.2) / 2,
+                (window.innerHeight - window.innerHeight * 0.15) / 2,
+                window.innerWidth * 0.2,
+                window.innerHeight * 0.15,
+                30
+            )
+            .endFill();
+        newGameButton.interactive = true;
+        newGameButton.click = () => {
+            if (gameOver) {
+                gameOver = false;
+
+                newGameButton.destroy();
+                newGameButton = null;
+
+                newGameButtonText.destroy();
+                newGameButtonText = null;
+
+                score = 0;
+
+                while (shots.length > 0) {
+                    const shot = shots.pop();
+                    shot.destroy();
+                }
+
+                while (enemies.length > 0) {
+                    const enemy = enemies.pop();
+                    enemy.destroy();
+                }
+            }
+        };
+
+        newGameButtonText = new PIXI.Text(
+            "New Game",
+            new PIXI.TextStyle({
+                fontFamily: ["Noto Sans JP", "sans-serif"],
+                fontSize:
+                    Math.min(window.innerWidth, window.innerHeight) * 0.06,
+                fill: stringColour(backgroundColour),
+                fontWeight: 700,
+                align: "center",
+                trim: true,
+            })
+        );
+        newGameButtonText.anchor.x = 0.5;
+        newGameButtonText.anchor.y = 0.5;
+        newGameButtonText.x = window.innerWidth / 2;
+        newGameButtonText.y = window.innerHeight / 2;
+
+        app.stage.addChild(newGameButton);
+        app.stage.addChild(newGameButtonText);
+    }
+}
 
 document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowUp") spaceship.velocity.y = -1;
@@ -186,7 +252,7 @@ app.ticker.add((delta) => {
         for (const enemy in enemies) {
             enemies[enemy].x -= window.innerWidth * 0.005 * delta;
             if (enemies[enemy].x <= 0 || collided(enemies[enemy], spaceship)) {
-                gameOver = true;
+                endGame();
             }
         }
     }
