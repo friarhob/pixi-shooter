@@ -48,6 +48,24 @@ scoreText.x = window.innerWidth / 2;
 scoreText.y = window.innerHeight * 0.02;
 app.stage.addChild(scoreText);
 
+// document.cookie = "highscore=10";
+// document.cookie = "highscore=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
+
+function getCookieHighScore() {
+    try {
+        return document.cookie
+            .split(";")
+            .find((x) => x.startsWith("highscore="))
+            .split("=")[1];
+    } catch (error) {
+        return 0;
+    }
+}
+function setCookieHighScore(score) {
+    document.cookie = "highscore="+score;
+}
+
+
 const instructions = new PIXI.Text(
     "Arrows up/down to move, spacebar to shoot",
     new PIXI.TextStyle({
@@ -81,6 +99,10 @@ function endGame() {
     if (!gameOver) {
         gameOver = true;
 
+        let highScore = parseInt(getCookieHighScore());
+        if(score > highScore)
+            setCookieHighScore(score);
+
         newGameButton = new PIXI.Graphics()
             .beginFill(scoreBoardColour)
             .drawRoundedRect(
@@ -95,6 +117,8 @@ function endGame() {
         newGameButton.click = () => {
             if (gameOver) {
                 gameOver = false;
+                console.log(getCookieHighScore());
+
 
                 newGameButton.destroy();
                 newGameButton = null;
@@ -187,7 +211,7 @@ function stringColour(colour) {
 app.ticker.add((delta) => {
     if (!gameOver) {
         /* Rendering score in canvas */
-        scoreText.text = "Score: " + score;
+        scoreText.text = "Score: " + score + "\nHigh Score: " + getCookieHighScore();
 
         /* Moving spaceship */
         spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01 * delta;
