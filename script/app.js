@@ -31,7 +31,7 @@ spaceship.velocity = {};
 spaceship.velocity.y = 0;
 
 const scoreText = new PIXI.Text(
-    "Score: 0",
+    "Score: 0\nHigh Score: "+getCookieHighScore(),
     new PIXI.TextStyle({
         fontFamily: ["Noto Sans JP", "sans-serif"],
         fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.05,
