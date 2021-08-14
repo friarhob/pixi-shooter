@@ -35,15 +35,35 @@ const scoreText = new PIXI.Text(
     new PIXI.TextStyle({
         fontFamily: ["Noto Sans JP", "sans-serif"],
         fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.05,
-        fill: stringColour(scoreBoardColour),
+        fill: stringColour(backgroundColour),
         fontWeight: 900,
         align: "center",
+        stroke: stringColour(scoreBoardColour),
+        strokeThickness: 10,
+        trim: true
     })
 );
 scoreText.anchor.x = 0.5;
 scoreText.x = window.innerWidth / 2;
 scoreText.y = window.innerHeight * 0.02;
 app.stage.addChild(scoreText);
+
+const instructions = new PIXI.Text(
+    "Arrows up/down to move, spacebar to shoot",
+    new PIXI.TextStyle({
+        fontFamily: ["Noto Sans JP", "sans-serif"],
+        fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.02,
+        fill: stringColour(spaceshipColour),
+        fontWeight: 500,
+        align: "center",
+        trim: true
+    })
+);
+instructions.anchor.x = 0.5;
+instructions.anchor.y = 1;
+instructions.x = window.innerWidth / 2;
+instructions.y = window.innerHeight * 0.98;
+app.stage.addChild(instructions);
 
 let shots = [];
 let enemies = [];
