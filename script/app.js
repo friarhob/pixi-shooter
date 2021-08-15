@@ -48,26 +48,8 @@ scoreText.x = window.innerWidth / 2;
 scoreText.y = window.innerHeight * 0.02;
 app.stage.addChild(scoreText);
 
-// document.cookie = "highscore=10";
-// document.cookie = "highscore=; expires=Thu, 01 Jan 1970 00:00:00 UTC";
-
-function getCookieHighScore() {
-    try {
-        return document.cookie
-            .split(";")
-            .find((x) => x.startsWith("highscore="))
-            .split("=")[1];
-    } catch (error) {
-        return 0;
-    }
-}
-function setCookieHighScore(score) {
-    document.cookie = "highscore="+score;
-}
-
-
 const instructions = new PIXI.Text(
-    "Arrows up/down to move, spacebar to shoot",
+    "Arrows up/down to move, spacebar to shoot | Touch to shoot/move",
     new PIXI.TextStyle({
         fontFamily: ["Noto Sans JP", "sans-serif"],
         fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.02,
@@ -88,12 +70,68 @@ const enemies = [];
 
 let score = 0;
 
-let gameOver = false;
-
 let newGameButton = null;
 let newGameButtonText = null;
 
+let gameOver = false;
 endGame();
+
+let cronShots = null;
+document.addEventListener("touchstart", (event) => {
+    cronShots = setInterval(generateShot, 200);
+});
+
+document.addEventListener("touchend", (event) => {
+    clearInterval(cronShots);
+});
+
+document.addEventListener("touchmove", (event) => {
+    let touch = event.changedTouches[0];
+
+    spaceship.y = touch.pageY;
+});
+
+document.addEventListener("keydown", (event) => {
+    if (event.key === "ArrowUp") spaceship.velocity.y = -1;
+    if (event.key === "ArrowDown") spaceship.velocity.y = 1;
+
+    if (event.key === " " && !gameOver) {
+        generateShot();
+    }
+});
+
+document.addEventListener("keyup", (event) => {
+    if (event.key === "ArrowUp" && spaceship.velocity.y == -1)
+        spaceship.velocity.y = 0;
+    if (event.key === "ArrowDown" && spaceship.velocity.y == 1)
+        spaceship.velocity.y = 0;
+});
+
+function generateShot() {
+    let shoot = PIXI.Sprite.from("images/fire-tail.png");
+    app.stage.addChild(shoot);
+    shoot.width = spaceship.width * 0.5;
+    shoot.height = spaceship.height * 0.7;
+    shoot.x = spaceship.x + spaceship.width;
+    shoot.y = spaceship.y + spaceship.height * 0.5;
+    shoot.anchor.set(0.5, 0.4);
+    shots.push(shoot);
+}
+
+function getCookieHighScore() {
+    try {
+        return document.cookie
+            .split(";")
+            .find((x) => x.startsWith("highscore="))
+            .split("=")[1];
+    } catch (error) {
+        return 0;
+    }
+}
+
+function setCookieHighScore(score) {
+    document.cookie = "highscore="+score;
+}
 
 function endGame() {
     if (!gameOver) {
@@ -114,7 +152,7 @@ function endGame() {
             )
             .endFill();
         newGameButton.interactive = true;
-        newGameButton.click = () => {
+        newGameButton.touchend = newGameButton.click = () => {
             if (gameOver) {
                 gameOver = false;
                 console.log(getCookieHighScore());
@@ -161,29 +199,6 @@ function endGame() {
         app.stage.addChild(newGameButtonText);
     }
 }
-
-document.addEventListener("keydown", (event) => {
-    if (event.key === "ArrowUp") spaceship.velocity.y = -1;
-    if (event.key === "ArrowDown") spaceship.velocity.y = 1;
-
-    if (event.key === " " && !gameOver) {
-        let shoot = PIXI.Sprite.from("images/fire-tail.png");
-        app.stage.addChild(shoot);
-        shoot.width = spaceship.width * 0.5;
-        shoot.height = spaceship.height * 0.7;
-        shoot.x = spaceship.x + spaceship.width;
-        shoot.y = spaceship.y + spaceship.height * 0.5;
-        shoot.anchor.set(0.5, 0.4);
-        shots.push(shoot);
-    }
-});
-
-document.addEventListener("keyup", (event) => {
-    if (event.key === "ArrowUp" && spaceship.velocity.y == -1)
-        spaceship.velocity.y = 0;
-    if (event.key === "ArrowDown" && spaceship.velocity.y == 1)
-        spaceship.velocity.y = 0;
-});
 
 function collided(sprite1, sprite2) {
     try {
