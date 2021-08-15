@@ -141,7 +141,7 @@ function endGame() {
     if (!gameOver) {
         gameOver = true;
 
-        clearInterval(cronShots);
+        if(cronShots) clearInterval(cronShots);
 
         let highScore = parseInt(getCookieHighScore());
         if (score > highScore) setCookieHighScore(score);
