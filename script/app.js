@@ -31,7 +31,7 @@ spaceship.velocity = {};
 spaceship.velocity.y = 0;
 
 const scoreText = new PIXI.Text(
-    "Score: 0\nHigh Score: "+getCookieHighScore(),
+    "Score: 0\nHigh Score: " + getCookieHighScore(),
     new PIXI.TextStyle({
         fontFamily: ["Noto Sans JP", "sans-serif"],
         fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.05,
@@ -78,7 +78,9 @@ endGame();
 
 let cronShots = null;
 document.addEventListener("touchstart", (event) => {
-    cronShots = setInterval(generateShot, 200);
+    if (!gameOver) {
+        cronShots = setInterval(generateShot, 200);
+    }
 });
 
 document.addEventListener("touchend", (event) => {
@@ -86,9 +88,11 @@ document.addEventListener("touchend", (event) => {
 });
 
 document.addEventListener("touchmove", (event) => {
-    let touch = event.changedTouches[0];
+    if (!gameOver) {
+        let touch = event.changedTouches[0];
 
-    spaceship.y = touch.pageY;
+        spaceship.y = touch.pageY;
+    }
 });
 
 document.addEventListener("keydown", (event) => {
@@ -130,16 +134,17 @@ function getCookieHighScore() {
 }
 
 function setCookieHighScore(score) {
-    document.cookie = "highscore="+score;
+    document.cookie = "highscore=" + score;
 }
 
 function endGame() {
     if (!gameOver) {
         gameOver = true;
 
+        clearInterval(cronShots);
+
         let highScore = parseInt(getCookieHighScore());
-        if(score > highScore)
-            setCookieHighScore(score);
+        if (score > highScore) setCookieHighScore(score);
 
         newGameButton = new PIXI.Graphics()
             .beginFill(scoreBoardColour)
@@ -156,7 +161,6 @@ function endGame() {
             if (gameOver) {
                 gameOver = false;
                 console.log(getCookieHighScore());
-
 
                 newGameButton.destroy();
                 newGameButton = null;
@@ -226,7 +230,8 @@ function stringColour(colour) {
 app.ticker.add((delta) => {
     if (!gameOver) {
         /* Rendering score in canvas */
-        scoreText.text = "Score: " + score + "\nHigh Score: " + getCookieHighScore();
+        scoreText.text =
+            "Score: " + score + "\nHigh Score: " + getCookieHighScore();
 
         /* Moving spaceship */
         spaceship.y += spaceship.velocity.y * window.innerHeight * 0.01 * delta;
