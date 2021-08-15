@@ -74,9 +74,9 @@ let newGameButton = null;
 let newGameButtonText = null;
 
 let gameOver = false;
+let cronShots = null;
 endGame();
 
-let cronShots = null;
 document.addEventListener("touchstart", (event) => {
     if (!gameOver) {
         cronShots = setInterval(generateShot, 200);
