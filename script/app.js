@@ -100,7 +100,8 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown") spaceship.velocity.y = 1;
 
     if (event.key === " " && !gameOver) {
-        generateShot();
+        if (!cronShots) cronShots = setInterval(generateShot, 200);
+        // generateShot();
     }
 });
 
@@ -109,6 +110,11 @@ document.addEventListener("keyup", (event) => {
         spaceship.velocity.y = 0;
     if (event.key === "ArrowDown" && spaceship.velocity.y == 1)
         spaceship.velocity.y = 0;
+
+    if (event.key === " " && !gameOver) {
+        clearInterval(cronShots);
+        cronShots = null;
+    }
 });
 
 function generateShot() {
@@ -141,7 +147,7 @@ function endGame() {
     if (!gameOver) {
         gameOver = true;
 
-        if(cronShots) clearInterval(cronShots);
+        if (cronShots) clearInterval(cronShots);
 
         let highScore = parseInt(getCookieHighScore());
         if (score > highScore) setCookieHighScore(score);
