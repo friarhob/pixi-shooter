@@ -100,8 +100,10 @@ document.addEventListener("keydown", (event) => {
     if (event.key === "ArrowDown") spaceship.velocity.y = 1;
 
     if (event.key === " " && !gameOver) {
-        if (!cronShots) cronShots = setInterval(generateShot, 200);
-        // generateShot();
+        if (!cronShots) {
+            generateShot();
+            cronShots = setInterval(generateShot, 200);
+        }
     }
 });
 
