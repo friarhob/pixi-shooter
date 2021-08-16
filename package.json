@@ -1,0 +1,21 @@
+{
+  "name": "pixi-shooter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "git checkout gh-pages && git merge main && git push -u origin gh-pages && git checkout main"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/friarhob/pixi-shooter.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/friarhob/pixi-shooter/issues"
+  },
+  "homepage": "https://github.com/friarhob/pixi-shooter#readme"
+}
