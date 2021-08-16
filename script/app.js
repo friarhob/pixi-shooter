@@ -52,7 +52,7 @@ const instructions = new PIXI.Text(
     "Arrows up/down to move, spacebar to shoot | Touch to shoot/move",
     new PIXI.TextStyle({
         fontFamily: ["Noto Sans JP", "sans-serif"],
-        fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.02,
+        fontSize: Math.min(window.innerWidth, window.innerHeight) * 0.03,
         fill: stringColour(spaceshipColour),
         fontWeight: 500,
         align: "center",
