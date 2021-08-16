@@ -199,7 +199,7 @@ function endGame() {
             new PIXI.TextStyle({
                 fontFamily: ["Noto Sans JP", "sans-serif"],
                 fontSize:
-                    Math.min(window.innerWidth, window.innerHeight) * 0.06,
+                    Math.min(window.innerHeight * 0.06, window.innerWidth*0.035),
                 fill: stringColour(backgroundColour),
                 fontWeight: 700,
                 align: "center",
