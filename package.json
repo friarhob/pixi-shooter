@@ -5,7 +5,8 @@
   "main": "index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "deploy": "git checkout gh-pages && git merge main && git push -u origin gh-pages && git checkout main"
+    "deploy": "git push -u origin gh-pages",
+    "lala": "git checkout gh-pages && git merge main && git push -u origin gh-pages && git checkout main"
   },
   "repository": {
     "type": "git",
