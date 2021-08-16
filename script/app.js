@@ -85,6 +85,7 @@ document.addEventListener("touchstart", (event) => {
 
 document.addEventListener("touchend", (event) => {
     clearInterval(cronShots);
+    cronShots = null;
 });
 
 document.addEventListener("touchmove", (event) => {
@@ -149,7 +150,10 @@ function endGame() {
     if (!gameOver) {
         gameOver = true;
 
-        if (cronShots) clearInterval(cronShots);
+        if (cronShots) {
+            clearInterval(cronShots);
+            cronShots = null;
+        }
 
         let highScore = parseInt(getCookieHighScore());
         if (score > highScore) setCookieHighScore(score);
