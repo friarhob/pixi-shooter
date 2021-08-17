@@ -277,8 +277,6 @@ app.ticker.add((delta) => {
             let enemy = PIXI.Sprite.from("images/starfighter.png");
             enemy.width = spaceship.width;
             enemy.height = spaceship.height;
-            enemy.x = window.innerWidth;
-            enemy.y = Math.random() * (window.innerHeight - enemy.height);
             enemy.score = 2;
             enemy.speed = 1;
             enemy.life = 2;
@@ -300,6 +298,9 @@ app.ticker.add((delta) => {
                 enemy.life /= 2;
                 enemy.score = 1;
             }
+
+            enemy.x = window.innerWidth;
+            enemy.y = Math.random() * (window.innerHeight - enemy.height);
 
             /* Checking collision with other enemies */
             let valid = true;
